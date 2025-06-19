@@ -1,17 +1,23 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const path = require('path')
 const PORT = 3000
 
 // Middleware básico
 app.use(express.json())
 app.use(cors()) // Habilitar CORS
+
+// Servir archivos estáticos desde la carpeta 'public'
+app.use(express.static(path.join(__dirname, 'public')))
+
 const {agregar, obtenerPorId, obtenerTodos} = require('./pelicula.repositorio')
 
-// ruta de prueba
-app.get("/", (req, res) =>{
-    res.send('Hola mundo');
-});
+
+// Ruta principal que envía el archivo HTML
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'peliculas.html'))
+})
 
 app.get('/api/peliculas', async (req, res) => {
     let peliculas = await obtenerTodos()
