@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Películas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #666;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Catálogo de Películas</h1>
+    <div id="loading" class="loading">Cargando películas...</div>
+    <div id="error" class="error" style="display: none;"></div>
+    <table id="peliculas-table" style="display: none;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody id="peliculas-body">
+            <!-- Las películas se insertarán aquí dinámicamente -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // URL de tu API (ajusta según tu configuración)
+            const apiUrl = 'http://localhost:3000/api/peliculas'; // Cambia esto por tu endpoint real
+            
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al obtener las películas');
+                    }
+                    return response.json();
+                })
+                .then(peliculas => {
+                    // Ocultar mensaje de carga
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    // Mostrar tabla
+                    const table = document.getElementById('peliculas-table');
+                    table.style.display = 'table';
+                    
+                    // Llenar tabla con datos
+                    const tbody = document.getElementById('peliculas-body');
+                    
+                    peliculas.forEach(pelicula => {
+                        const row = document.createElement('tr');
+                        
+                        const idCell = document.createElement('td');
+                        idCell.textContent = pelicula.id;
+                        row.appendChild(idCell);
+                        
+                        const nombreCell = document.createElement('td');
+                        nombreCell.textContent = pelicula.titulo || 'Sin nombre';
+                        row.appendChild(nombreCell);
+                        
+                        const descripcionCell = document.createElement('td');
+                        descripcionCell.textContent = pelicula.resumen || 'Sin descripción';
+                        row.appendChild(descripcionCell);
+                        
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('loading').style.display = 'none';
+                    const errorDiv = document.getElementById('error');
+                    errorDiv.textContent = `Error al cargar las películas: ${error.message}`;
+                    errorDiv.style.display = 'block';
+                });
+        });
+    </script>
+</body>
+</html>

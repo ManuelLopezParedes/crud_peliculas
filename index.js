@@ -1,9 +1,11 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 const PORT = 3000
 
 // Middleware básico
 app.use(express.json())
+app.use(cors()) // Habilitar CORS
 const {agregar, obtenerPorId, obtenerTodos} = require('./pelicula.repositorio')
 
 // ruta de prueba
