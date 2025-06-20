@@ -2,7 +2,9 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const path = require('path')
-const PORT = 3000
+const PORT = process.env.PORT
+require('dotenv').config();
+
 
 // Middleware básico
 app.use(express.json())
